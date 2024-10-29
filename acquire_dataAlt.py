@@ -10,7 +10,7 @@ import numpy as np
 # ###########################################
 
 Tscan       = 1  # Sampling period for data retrieval  from API
-Rscan       = 250  # Scan radius around ref [nm] // api.airplanes.live limits to 250nm
+Rscan       = 10  # Scan radius around ref [nm] // api.airplanes.live limits to 250nm
 
 # Latitude and longitude of radius-reference
 EDIN_COORD  = [55.94843,-3.19658]
@@ -87,23 +87,23 @@ print(f"Starting data dump into {filename}")
 ctr    = 0
 Lcoord = np.shape(COORDS)[0]
 try:
-    while True:
+    while ctr<2:
 
         these_coords = COORDS[ctr % Lcoord] # np.remainder(ctr,Lcoord)
         thedata = fetch_and_store_data(these_coords)
 
         # all_data.append(the_data) # <<<<<<<<<<<<<<<<
 
-
-        # Write the data to file
+        # Write to file
         with open(filename, 'a') as f:
-            json.dump(thedata, f, indent=2)        
+            json.dump(thedata, f, indent="")        
             # json.dump(all_data, f, indent=2) # <<<<<<<<<<<<<<
-        
-        
+                
         # print(f"Data added to {filename}")
         ctr += 1
         time.sleep(Tscan)
+
+
 except KeyboardInterrupt:
     print("Data collection stopped.")
 
