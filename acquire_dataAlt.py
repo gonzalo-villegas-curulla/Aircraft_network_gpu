@@ -80,32 +80,38 @@ def fetch_and_store_data(coords):
 # MAIN 
 # #####################################
 
-all_data = []
+# all_data = []
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 filename = f"data_{timestamp}.json"
 print(f"Starting data dump into {filename}")
 ctr    = 0
 Lcoord = np.shape(COORDS)[0]
+
+# For well-formed JSON format, we put [ at the beginnig and ] end of all the appended objects
+with open(filename,'w') as f:
+     f.write("[")
+
 try:
-    while ctr<2:
+    while ctr<3:
 
         these_coords = COORDS[ctr % Lcoord] # np.remainder(ctr,Lcoord)
-        thedata = fetch_and_store_data(these_coords)
-
-        # all_data.append(the_data) # <<<<<<<<<<<<<<<<
+        thedata = fetch_and_store_data(these_coords)      
 
         # Write to file
         with open(filename, 'a') as f:
+            if ctr>0:
+                 f.write(",\n")
             json.dump(thedata, f, indent="")        
-            # json.dump(all_data, f, indent=2) # <<<<<<<<<<<<<<
                 
-        # print(f"Data added to {filename}")
         ctr += 1
         time.sleep(Tscan)
 
-
 except KeyboardInterrupt:
     print("Data collection stopped.")
+finally:
+     # Pending JSON array formatting:
+     with open(filename,'a') as f:
+          f.write("]\n")
 
 
 

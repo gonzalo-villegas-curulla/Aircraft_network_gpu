@@ -52,6 +52,7 @@ def fetch_and_store_data(coords):
 
     full_url = API_URL + "point/" + str(coords[0])+"/"+str(coords[1])+"/"+str(Rscan)
     # full_url = API_URL + "/mil" # For militar aircrafts
+
     response = requests.get(full_url)
     response.raise_for_status()
     data     = response.json()
@@ -61,10 +62,10 @@ def fetch_and_store_data(coords):
     for aircraft in data.get("ac", []):
             entry = {
                 "hex": aircraft.get("hex"),
-                "type": aircraft.get("type"),
-                "altitude": aircraft.get("alt_baro"),
+                # "type": aircraft.get("type"),
                 "ground_speed": aircraft.get("gs"), 
                 "true_speed": aircraft.get("tas"),
+                "altitude": aircraft.get("alt_baro"),
                 "latitude": aircraft.get("lat"),
                 "longitude": aircraft.get("lon"),
                 "baro_rate": aircraft.get("baro_rate"),
@@ -80,32 +81,40 @@ def fetch_and_store_data(coords):
 # MAIN 
 # #####################################
 
-all_data = []
+# all_data = []
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 filename = f"data_{timestamp}.json"
 print(f"Starting data dump into {filename}")
 ctr    = 0
 Lcoord = np.shape(COORDS)[0]
+
+# For well-formed JSON format, we put [ at the beginnig and ] end of all the appended objects
+with open(filename,'w') as f:
+     f.write("[")
+
+
+
+
 try:
     while True:
 
         these_coords = COORDS[ctr % Lcoord] # np.remainder(ctr,Lcoord)
-        thedata = fetch_and_store_data(these_coords)
+        thedata = fetch_and_store_data(these_coords)      
 
-        # all_data.append(the_data) # <<<<<<<<<<<<<<<<
-
-
-        # Write the data to file
+        # Write to file
         with open(filename, 'a') as f:
-            json.dump(thedata, f, indent=2)        
-            # json.dump(all_data, f, indent=2) # <<<<<<<<<<<<<<
-        
-        
-        # print(f"Data added to {filename}")
+            if ctr>0:
+                 f.write(",\n")
+            json.dump(thedata, f, indent="")        
+                
         ctr += 1
         time.sleep(Tscan)
+
 except KeyboardInterrupt:
     print("Data collection stopped.")
-
+finally:
+     # Pending JSON array formatting:
+     with open(filename,'a') as f:
+          f.write("]\n")
 
 
