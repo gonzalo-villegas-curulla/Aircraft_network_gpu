@@ -47,6 +47,7 @@ def haversine(lat1, lon1, lat2, lon2):
 # ###################################################
 
 thefile = 'data_20241029_163700.json'
+thefile = 'data_20241031_094430.json'
 
 with open(thefile) as f:
     data = json.load(f)
@@ -80,10 +81,13 @@ IDX = 0
 print(f"Populating G...\n")
 print(f"Adding nodes...")
 
+data_ctr = 0
+ctr = 0
 for IDX in range(len(data)):
     for entry in data[IDX]:
         # for aircraft in entry:
 
+    
         # # aircraft =         
         # hex_code = aircraft.get("hex")
         # lat = aircraft.get("latitude")
@@ -99,11 +103,13 @@ for IDX in range(len(data)):
         lat = entry.get("latitude")
         lon = entry.get("longitude")
         if lat is not None and lon is not None:
-            G.add_node(hex_code, latitude=lat, longitude=lon)
-            aircraft_ctr+=1
+            if ctr<4000:
+                G.add_node(hex_code, latitude=lat, longitude=lon)
+                aircraft_ctr+=1
+            ctr+=1
 
         loop_ctr    += 1
-print(f"(done)\n")        
+print(f"(done)({len(G):d} nodes)\n")        
 
 
 print(f"Adding edges...")
@@ -117,9 +123,9 @@ for node1 in G.nodes:
             G.add_edge(node1, node2, length=distance)
 print(f"(done)\n")
 
-print(f"Total aircraft processed: {aircraft_ctr}")
-print(f"Total nodes in graph: {len(G.nodes)}")
-print(f"Total edges in graph: {len(G.edges)}")
+# print(f"Total aircraft processed: {aircraft_ctr}")
+# print(f"Total nodes in graph: {len(G.nodes)}")
+# print(f"Total edges in graph: {len(G.edges)}")
 
 
 nxcg_G = nxcg.from_networkx(G)
@@ -136,7 +142,7 @@ print(f"Betweenness on GPU: {end - init:.2f} seconds")
 
 
 # ###################################################
-# VISUALISATION GPU
+# VISUALISATION GPU (?)
 # ###################################################
 if False:
     print(f"\nStarting visualization\n")
@@ -167,7 +173,7 @@ if False:
 
 
 # ###################################################
-# VISUALISATION CPU (take a seat...)
+# VISUALISATION CPU 
 # ###################################################
 
 if True:
@@ -176,22 +182,37 @@ if True:
     plt.figure(figsize=(10, 8))
 
     print(f"Extracting node positions...")
+    init=time.time()
     pos = {node: (G.nodes[node]['longitude'], G.nodes[node]['latitude']) for node in G.nodes}
-    print(f"(Done)\n")
+    end=time.time()
+    print(f"(Done). {end-init:.2f} seconds\n")
+
+    # Nodes ======================
     print(f"Drawing nodes...")
     init = time.time()
-    nx.draw(G, pos, with_labels=True, node_size=50, node_color="skyblue", font_size=8)
+    # nx.draw(G, pos, with_labels=True, node_size=50, node_color="skyblue", font_size=8)    
+    # nx.draw(G, pos, with_labels=False, node_size=50, node_color="skyblue", font_size=8)
+    nx.draw_networkx_nodes(G, pos, node_size=50, node_color="skyblue")
+    # nx.draw_networkx_edges(...)
+    # nx.draw_edges(), .draw_networkx_labels(), .draw_networkx_edge_labels()
     end = time.time()    
     print(f"(Done). {end-init:.2f} seconds \n")
-    print(f"Getting edge lengths...")
-    edge_labels = nx.get_edge_attributes(G, 'length')
-    print(f"(Done)\n")
-    print(f"Drawing edges...")
-    init = time.time()
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6)
-    end = time.time()
-    print(f"(Done). {end-init:.2f} seconds \n")
-    plt.xlabel("Longitude")
-    plt.ylabel("Latitude")
-    plt.title("Aircraft Position Network")
+
     plt.show()
+
+    # Edges =======================
+    if False:
+        print(f"Getting edge lengths...")
+        edge_labels = nx.get_edge_attributes(G, 'length')
+        print(f"(Done)\n")
+        print("Drawing edges...")
+        init = time.time()
+        # nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6)
+        nx.draw_networkx_edge_labels(G, pos, edge_labels="", font_size=6)
+        end = time.time()
+        print(f"(Done). {end-init:.2f} seconds \n")
+        plt.xlabel("Longitude")
+        plt.ylabel("Latitude")
+        plt.title("Aircraft Position Network")
+
+
