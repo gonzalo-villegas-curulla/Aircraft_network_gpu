@@ -2,16 +2,20 @@
 # conda activate cugraphen
 import time
 import numpy as np
-# import cugraph
-# import cudf
-import json
-# from pprint import pprint
-# import pandas as pd
-import networkx as nx
-import nx_cugraph as nxcg
 import matplotlib.pyplot as plt
 from math import radians, sin, cos, sqrt, atan2
 
+import json
+# from pprint import pprint
+# import pandas as pd
+
+import networkx as nx
+import nx_cugraph as nxcg
+import cugraph
+import cudf
+import graphistry # gpu acceleration of graph visualization
+
+biginit = time.time()
 
 # nx.betweenness_centrality(G, k=10,backend="cugraph")
 #                   or
@@ -46,8 +50,8 @@ def haversine(lat1, lon1, lat2, lon2):
 # LOAD data
 # ###################################################
 
-thefile = 'data_20241029_163700.json'
-thefile = 'data_20241031_094430.json'
+thefile = 'data_20241031_101252.json'
+thefile = 'data_20241031_105813.json'
 
 with open(thefile) as f:
     data = json.load(f)
@@ -85,35 +89,20 @@ data_ctr = 0
 ctr = 0
 for IDX in range(len(data)):
     for entry in data[IDX]:
-        # for aircraft in entry:
-
-    
-        # # aircraft =         
-        # hex_code = aircraft.get("hex")
-        # lat = aircraft.get("latitude")
-        # lon = aircraft.get("longitude")
-
-        # if lat is not None and lon is not None:
-
-        #     # Add node for each unique aircraft
-        #     G.add_node(hex_code, latitude=lat, longitude=lon)
-        #     aircraft_ctr+=len(item)
-
+ 
         hex_code = entry.get("hex")
         lat = entry.get("latitude")
         lon = entry.get("longitude")
         if lat is not None and lon is not None:
-            if ctr<4000:
-                G.add_node(hex_code, latitude=lat, longitude=lon)
-                aircraft_ctr+=1
-            ctr+=1
-
+            G.add_node(hex_code, latitude=lat, longitude=lon)
+            aircraft_ctr+=1
+            
         loop_ctr    += 1
 print(f"(done)({len(G):d} nodes)\n")        
 
 
 print(f"Adding edges...")
-# Add edges checking node uniqueness
+# Add edges (check node uniqueness)
 for node1 in G.nodes:
     lat1, long1 = G.nodes[node1]["latitude"], G.nodes[node1]["longitude"]    
     for node2 in G.nodes:
@@ -128,55 +117,33 @@ print(f"(done)\n")
 # print(f"Total edges in graph: {len(G.edges)}")
 
 
+# ###################################################
+#  MATHS 
+# ###################################################
+
+
+# Convert: NetworkX --> nx_cuGraph
 nxcg_G = nxcg.from_networkx(G)
 
-init = time.time()
-BC_GPU = nxcg.betweenness_centrality(nxcg_G)
-end = time.time()
-print(f"Betweenness on GPU: {end - init:.2f} seconds")
-
-# init = time.time()
-# BC_CPU = nx.betweenness_centrality(G)
-# end = time.time()
-# print(f"Betweenness on CPU: {end - init:.2f} seconds")
-
-
-# ###################################################
-# VISUALISATION GPU (?)
-# ###################################################
 if False:
-    print(f"\nStarting visualization\n")
-
-    plt.figure(figsize=(10, 8))
-
-    print(f"Extracting node positions...")
-    pos = {node: (nxcg_G.nodes[node]['longitude'], nxcg_G.nodes[node]['latitude']) for node in nxcg_G.nodes}
-    print(f"(Done)\n")
-    print(f"Drawing nodes...")
     init = time.time()
-    nx.draw(nxcg_G, pos, with_labels=True, node_size=50, node_color="skyblue", font_size=8)
+    BC_GPU = nxcg.betweenness_centrality(nxcg_G)
     end = time.time()
-    print(f"(Done). {end-init:.2f} seconds \n")
-    
-    print(f"Getting edge lengths...")
-    edge_labels = nx.get_edge_attributes(nxcg_G, 'length')
-    print(f"(Done)\n")
-    print(f"Drawing edges...")
-    init = time.time()
-    nx.draw_networkx_edge_labels(nxcg_G, pos, edge_labels=edge_labels, font_size=6)
-    end = time.time()
-    print(f"(Done). {end-init:.2f} seconds \n")
-    plt.xlabel("Longitude")
-    plt.ylabel("Latitude")
-    plt.title("Aircraft Position Network")
-    plt.show()
+    print(f"Betweenness on GPU: {end - init:.2f} seconds")
+
+    # init = time.time()
+    # BC_CPU = nx.betweenness_centrality(G)
+    # end = time.time()
+    # print(f"Betweenness on CPU: {end - init:.2f} seconds")
+
 
 
 # ###################################################
 # VISUALISATION CPU 
 # ###################################################
 
-if True:
+
+if False:
     print(f"\nStarting visualization\n")
 
     plt.figure(figsize=(10, 8))
@@ -192,15 +159,40 @@ if True:
     init = time.time()
     # nx.draw(G, pos, with_labels=True, node_size=50, node_color="skyblue", font_size=8)    
     # nx.draw(G, pos, with_labels=False, node_size=50, node_color="skyblue", font_size=8)
-    nx.draw_networkx_nodes(G, pos, node_size=50, node_color="skyblue")
+    nx.draw_networkx_nodes(G, pos, node_size=20, node_color="blue", alpha=0.3)
     # nx.draw_networkx_edges(...)
     # nx.draw_edges(), .draw_networkx_labels(), .draw_networkx_edge_labels()
     end = time.time()    
     print(f"(Done). {end-init:.2f} seconds \n")
 
-    plt.show()
+    
+    # Get acquisition coordinates and scatter them
+    exec(open("coordinates.py").read())
+    plt.scatter(np.fliplr(COORDS)[:,0],np.fliplr(COORDS)[:,1],s=50,c="red")
+
+    plt.xlabel(r"Longitude (decimal deg)")
+    plt.ylabel(r"Latitude (decimal deg)")
+    ax=plt.gca()
+    ax.tick_params(left=True, bottom=True, labelleft=True, labelbottom=True)
+    ax.grid()
+    
 
     # Edges =======================
+    if False:
+        print("Drawing edges...")
+        init = time.time()
+        # nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6)
+        nx.draw_networkx_edges(G, pos)
+        end = time.time()
+        print(f"(Done). {end-init:.2f} seconds \n")
+        plt.xlabel("Longitude")
+        plt.ylabel("Latitude")
+        plt.title("Aircraft Position Network")        
+
+
+
+    # Edges Labels =======================
+
     if False:
         print(f"Getting edge lengths...")
         edge_labels = nx.get_edge_attributes(G, 'length')
@@ -216,3 +208,71 @@ if True:
         plt.title("Aircraft Position Network")
 
 
+
+
+
+bigend = time.time()
+print(f"Total script runtime: {bigend-biginit} s.")
+plt.show()
+
+
+# ###################################################
+# VISUALIZATION WITH GRAPHISTRY (GPU)
+# ###################################################
+
+# Set up Graphistry
+# graphistry.register(api=3)  # Adjust this if your API version differs
+# graphistry.authenticate()  # Ensure authentication if required
+
+
+if True:
+    # Convert NetworkX graph nodes and edges into cuDF DataFrames
+    print("\nPreparing data for Graphistry visualization...")
+
+    # Create cuDF DataFrame for nodes with attributes
+    nodes_df = cudf.DataFrame({
+        'node': list(G.nodes),
+        'latitude': [G.nodes[node]['latitude'] for node in G.nodes],
+        'longitude': [G.nodes[node]['longitude'] for node in G.nodes]
+    })
+
+    # Create cuDF DataFrame for edges with lengths as weights
+    edges_list = []
+    for node1, node2, attr in G.edges(data=True):
+        edges_list.append((node1, node2, attr['length']))
+    edges_df = cudf.DataFrame(edges_list, columns=['source', 'destination', 'length'])
+
+    print("Data prepared. Starting GPU visualization...")
+
+    # # Extract node and edge attributes
+    # node_data = [{"node": node, **data} for node, data in G.nodes(data=True)]
+    # edge_data = [{"source": src, "target": dst, **data} for src, dst, data in G.edges(data=True)]
+
+#     # Convert attributes into cuDF DataFrames
+#     nodes_df = cudf.DataFrame(node_data)
+#     edges_df = cudf.DataFrame(edge_data)
+
+#     # Set up Graphistry visualization
+#     graphistry.bind(
+#         source="source",
+#         destination="target",
+#         node="node"
+#     ).nodes(
+#         nodes_df
+#     ).edges(
+#         edges_df
+#     )
+
+#     # Customize visualization with colors and sizes
+#     # Graphistry uses columns for visualization attributes
+#     graphistry.plot(
+#         point_size="size",       # Customize node size based on attribute 'size'
+#         point_color="color",     # Customize node color based on attribute 'color'
+#         edge_weight="weight",    # Edge weight is shown as line thickness
+#         render="notebook"        # Render in notebook if applicable
+# )
+
+
+
+
+    print("Graphistry plot complete.")

@@ -24,17 +24,34 @@ TOUL_COORD  = [43.60182, 1.44124]
 BCN_COORD   = [41.38613, 2.16909] 
 MDR_COORD   = [40.41807, -3.69567]
 
+BREST_COORD    = [48.39758, -4.48612]
+CORUNA_COORD   = [43.35378,-8.42859]
+MALLRCA_COORD  = [39.61415,2.93885]
+LAGOS_COORD    = [37.09462,-8.68878]
+MALAGA_COORD   = [36.73145,-4.45168]
+CASABLNC_COORD = [33.99802,-6.74599]
+AGADIR_COORD   = [30.39699,-9.56286]
+PALMAS_COORD   = [28.10348,-15.43305]
+
 COORDS = [
     EDIN_COORD,
     AMS_COORD,
     LND_COORD,
     PARIS_COORD,
+    BREST_COORD,
     MNCH_COORD,
     GNV_COORD,
     MIL_COORD,
     TOUL_COORD,
+    CORUNA_COORD,
     BCN_COORD,
     MDR_COORD,
+    MALLRCA_COORD,
+    LAGOS_COORD,
+    MALAGA_COORD,
+    CASABLNC_COORD,
+    AGADIR_COORD,
+    PALMAS_COORD,
     ]
 
 
@@ -86,7 +103,7 @@ timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 filename = f"data_{timestamp}.json"
 print(f"Starting data dump into {filename}")
 ctr    = 0
-Lcoord = np.shape(COORDS)[0]
+Lcoord = len(COORDS)
 
 # For well-formed JSON format, we put [ at the beginnig and ] end of all the appended objects
 with open(filename,'w') as f:
@@ -98,8 +115,9 @@ with open(filename,'w') as f:
 try:
     while True:
 
+        # Loop through the set of coordinates at each iteration
         these_coords = COORDS[ctr % Lcoord] # np.remainder(ctr,Lcoord)
-        thedata = fetch_and_store_data(these_coords)      
+        thedata      = fetch_and_store_data(these_coords)      
 
         # Write to file
         with open(filename, 'a') as f:
