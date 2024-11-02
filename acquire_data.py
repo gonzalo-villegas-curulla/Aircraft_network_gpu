@@ -13,6 +13,7 @@ Tscan       = 1  # Sampling period for data retrieval  from API
 Rscan       = 250  # Scan radius around ref [nm] // api.airplanes.live limits to 250nm
 
 # Latitude and longitude of radius-reference
+exec(open("coordinates.py").read())
 EDIN_COORD  = [55.94843,-3.19658]
 AMS_COORD   = [52.37205, 4.89048]
 LND_COORD   = [51.51232, -0.11292]
