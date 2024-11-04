@@ -10,7 +10,7 @@ In the epidemiology model, the cells were represented by nodes of a graph and tr
 
 # Methods
 
-Data on aircraft location and other attributes is accessible by means of ADS-B signal and STL-SDR (Realtek Software-Defined Radio) devices. One of the most extended projects is [Airplanes.Live](https://airplanes.live/api-guide/), crowd-sourced, open source and with a documented API. Further reading on STL-SDR, documentation, projects and posts may be found in the [RTL-SDR Blog](https://www.rtl-sdr.com/). It's a good start to get to know the minimum setup hardware, portable options, and how to choose and configure your setup.
+Data on aircraft location and other attributes is accessible by means of ADS-B signal and RTL-SDR (Realtek Software-Defined Radio) devices. One of the most extended projects is [Airplanes.Live](https://airplanes.live/api-guide/), crowd-sourced, open source and with a documented API. Further reading on RTL-SDR, documentation, projects and posts may be found in the [RTL-SDR Blog](https://www.rtl-sdr.com/). It's a good start to get to know the minimum setup hardware, portable options, and how to choose and configure your setup.
 
 
 # Potential objectives
