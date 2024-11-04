@@ -227,106 +227,20 @@ print(f"Preop3 {end-init:.2} seconds")
 
 
 # ==================== 
-if False:
+if True:
     import matplotlib.pyplot as plt
 
-    viridis_palette = [plt.cm.viridis(i) for i in range(256)]
-    color_palette = [f'#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}' for r, g, b, _ in viridis_palette]
+    # viridis_palette = [plt.cm.viridis(i) for i in range(256)]
+    # color_palette = [f'#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}' for r, g, b, _ in viridis_palette]
 
-    graphistry.register(api=3, protocol='https', server='hub.graphistry.com', username='XXXXXXXXXXXXX', password='XXXXXXXXXXXX')
+    graphistry.register(api=3, server='hub.graphistry.com', username='XXX', password='XXXXXXXXXXXX')
 
-    # Bind and plot
-    # plot = graphistry.bind(
-    #     source='source', destination='destination', node='node_id'
-    # ).nodes(nodes_df).edges(edges_df).encode_point_color(
-    #     'ground_speed', palette=color_palette, as_continuous=True
-    # ).encode_point_size(
-    #     'altitude'
-    # # ).encode_x(
-    # #     'longitude'
-    # # ).encode_y(
-    # #     'latitude'
-    # ).settings(url_params={'height': 800, 'play': 4000})
 
-    plot = graphistry.nodes(nodes_df,'src','dst').edges(edges_df,'src','dst').settings(url_params={'height': 800, 'play': 4000})
+    # g = graphistry.nodes_df,'src','dst').edges(edges_df,'src','dst').settings(url_params={'height': 800, 'play': 4000})
+    g = graphistry.edges(edges_df).bind(source='source',destination='destination')
     
 
-    plot.plot()
+    g.plot()
 
 
 
-
-#  =================================================
-if False:
-    import networkx as nx
-    import pandas as pd
-    import plotly.graph_objects as go
-    from dash import Dash, dcc, html
-
-    # Create a NetworkX graph from the nodes and edges data
-    G = nx.Graph()
-
-    # Add nodes with position and custom labels
-    for _, row in nodes_df.iterrows():
-        G.add_node(row['hex'], pos=(row['longitude'], row['latitude']))
-
-    # Add edges with weights
-    for _, row in edges_df.iterrows():
-        G.add_edge(row['source'], row['destination'], weight=row['distance'])
-
-    # Get positions for each node
-    positions = nx.spring_layout(G, seed=42)  # Can use any layout; spring_layout works well generally
-
-    # Extract X, Y coordinates for nodes
-    x_nodes = [positions[node][0] for node in G.nodes]
-    y_nodes = [positions[node][1] for node in G.nodes]
-
-    # Extract edges for X and Y coordinates
-    edge_x = []
-    edge_y = []
-    for edge in G.edges:
-        x0, y0 = positions[edge[0]]
-        x1, y1 = positions[edge[1]]
-        edge_x += [x0, x1, None]  # None creates a break in line segments for individual edges
-        edge_y += [y0, y1, None]
-
-    # Create the Dash app
-    app = Dash(__name__)
-
-    app.layout = html.Div([
-        html.H1("Interactive Network Graph"),
-        dcc.Graph(id='network-graph',
-                figure={
-                    'data': [
-                        # Edges as line shapes
-                        go.Scatter(
-                            x=edge_x, y=edge_y,
-                            line=dict(width=0.5, color='#888'),
-                            hoverinfo='none',
-                            mode='lines'
-                        ),
-                        # Nodes as scatter points
-                        go.Scatter(
-                            x=x_nodes, y=y_nodes,
-                            mode='markers+text',
-                            marker=dict(
-                                color='SkyBlue', size=10, line=dict(width=1)
-                            ),
-                            text=[str(node) for node in G.nodes],  # Display node IDs
-                            hoverinfo='text',
-                        )
-                    ],
-                    'layout': go.Layout(
-                        title='Network Graph Visualization',
-                        showlegend=False,
-                        hovermode='closest',
-                        margin=dict(b=20, l=5, r=5, t=40),
-                        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
-                    )
-                })
-    ])
-
-    # Run the Dash app
-    if __name__ == '__main__':
-        app.run_server(debug=True)

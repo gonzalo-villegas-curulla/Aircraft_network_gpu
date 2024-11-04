@@ -32,3 +32,9 @@ Data on aircraft location and other attributes is accessible by means of ADS-B s
 * CUDA, pyCUDA, cugraph (minimum compute capability of 7.0 is required to run on GPU device)
 * Graphistry
 * JSON data bases
+
+# Example showcase
+
+Just under one minute of acquisition in the West of Europe (see Airplaines.live API limitations), the data is encoded into 2120 nodes having used an arbitrary adjacency criteria of 50 km threshold between nodes. The most salient hubs are found by visual inspection in the vicinity of London and Paris, followed by Amsterdam. One possible visualization is found below:
+
+![2120 aircraft nodes visualizaed with graphistry v2.41.8](assets/Sample02.png)
