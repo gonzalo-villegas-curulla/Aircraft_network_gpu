@@ -259,12 +259,16 @@ print(f"Prep3 {end-init:.2} seconds")
 
 # ==================== 
 if True:
-    import matplotlib.pyplot as plt
 
+    import configparser 
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    username = config['graphistry']['username']
+    password = config['graphistry']['password']
     # viridis_palette = [plt.cm.viridis(i) for i in range(256)]
     # color_palette = [f'#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}' for r, g, b, _ in viridis_palette]
 
-    graphistry.register(api=3, server='hub.graphistry.com', username='GVC', password='Beethoven1987')
+    graphistry.register(api=3, protocol='https', server='hub.graphistry.com', username=username, password=password)
 
 
     # g = graphistry.nodes_df,'src','dst').edges(edges_df,'src','dst').settings(url_params={'height': 800, 'play': 4000})
