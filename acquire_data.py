@@ -9,52 +9,11 @@ import numpy as np
 # Parameters 
 # ###########################################
 
-Tscan       = 1  # Sampling period for data retrieval  from API
+Tscan       = 1    # Sampling period for data retrieval  from API
 Rscan       = 250  # Scan radius around ref [nm] // api.airplanes.live limits to 250nm
 
-# Latitude and longitude of radius-reference
+# Get acquisition points' coordinates from external file
 exec(open("coordinates.py").read())
-EDIN_COORD  = [55.94843,-3.19658]
-AMS_COORD   = [52.37205, 4.89048]
-LND_COORD   = [51.51232, -0.11292]
-PARIS_COORD = [48.84112, 2.33181]  
-MNCH_COORD  = [48.13894, 11.57770]
-GNV_COORD   = [46.20265, 6.14067]
-MIL_COORD   = [45.46615, 9.18818]
-TOUL_COORD  = [43.60182, 1.44124]
-BCN_COORD   = [41.38613, 2.16909] 
-MDR_COORD   = [40.41807, -3.69567]
-
-BREST_COORD    = [48.39758, -4.48612]
-CORUNA_COORD   = [43.35378,-8.42859]
-MALLRCA_COORD  = [39.61415,2.93885]
-LAGOS_COORD    = [37.09462,-8.68878]
-MALAGA_COORD   = [36.73145,-4.45168]
-CASABLNC_COORD = [33.99802,-6.74599]
-AGADIR_COORD   = [30.39699,-9.56286]
-PALMAS_COORD   = [28.10348,-15.43305]
-
-COORDS = [
-    EDIN_COORD,
-    AMS_COORD,
-    LND_COORD,
-    PARIS_COORD,
-    BREST_COORD,
-    MNCH_COORD,
-    GNV_COORD,
-    MIL_COORD,
-    TOUL_COORD,
-    CORUNA_COORD,
-    BCN_COORD,
-    MDR_COORD,
-    MALLRCA_COORD,
-    LAGOS_COORD,
-    MALAGA_COORD,
-    CASABLNC_COORD,
-    AGADIR_COORD,
-    PALMAS_COORD,
-    ]
-
 
 
 API_URL     = "https://api.airplanes.live/v2/"
@@ -109,8 +68,6 @@ Lcoord = len(COORDS)
 # For well-formed JSON format, we put [ at the beginnig and ] end of all the appended objects
 with open(filename,'w') as f:
      f.write("[")
-
-
 
 
 try:
