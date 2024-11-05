@@ -25,6 +25,7 @@ Data on aircraft location and other attributes is accessible by means of ADS-B s
 * Accelerate code to process data, ideally, under quasi-real-time requests
 * Utilisation of sub-graphs
 * Differentiate between stationary (zero baro-rate) and transient aircrafts (i.e. landing or taking off)
+* What type of graph best represents the elements and attributes in this system?
 
 
 # Tools
@@ -35,7 +36,7 @@ Data on aircraft location and other attributes is accessible by means of ADS-B s
 
 # Example showcase
 
-Just under one minute of acquisition in the West of Europe (see Airplaines.live API limitations), the data is encoded into 2120 nodes having used an arbitrary adjacency criteria of 50 km threshold between nodes. The most salient hubs are found by visual inspection in the vicinity of London and Paris, followed by Amsterdam. One possible visualization is found below:
+Just under one minute of acquisition in the West of Europe (see Airplaines.live API limitations), the data is encoded into 2120 nodes having used an adjacency criteria of 5.5 km threshold between nodes and a 1.1 overhead factor --see [ICAO's Chapter 3 of Annex 11](https://www.iacm.gov.mz/app/uploads/2018/12/an_11_Air-Traffic-Services_15ed._2018_rev.51_01.07.18.pdf), which establishes the minimal longitudinal, vertical and lateral separation between aircrafts. The most salient hubs are found by visual inspection in the vicinity of London and Paris, followed by Amsterdam. One possible visualization is found below:
 
 
 
