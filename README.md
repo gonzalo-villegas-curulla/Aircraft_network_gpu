@@ -4,8 +4,10 @@ This project spun off the developments in network and graph representation and a
 
 In the epidemiology model, the cells were represented by nodes of a graph and treated as a Gillespie process for two types of events (infection and recovery). In the present case, the network is constituted by aircrafts and airports, see a simple representation (without graph edges) below
 
-![](assets/Simple01.jpeg)
-
+<!--![](assets/Simple01.jpeg)-->
+<p align="center">
+  <img src="assets/Simple01.jpeg" width="50%" />
+</p>
 
 
 # Methods
@@ -43,6 +45,7 @@ Just under one minute of acquisition in the West of Europe (see Airplaines.live 
 <p align="center">
   <!--<img src="assets/Sample02.png" width="47%" />-->
   <!--<img src="assets/Sample03.png" width="47%" />-->
-  <img src="assets/Sample05.png" width="60%" />
+  <img src="assets/Sample05.png" width="47%" />
+  <img src="assets/Sample06.png" width="47%" />
 </p>
 

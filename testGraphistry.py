@@ -7,9 +7,14 @@ import time
 import numpy as np
 import cupy as cp
 from numba import cuda
+import sys
 
 # Load the JSON data
-with open('data_20241031_101252.json') as f:
+thefile = 'data_20241031_101252.json'
+# thefile = 'data_20241031_105813.json'
+# thefile = 'data_20241105_103636.json'
+
+with open(thefile) as f:
     data = json.load(f)
 
 # Flatten JSON data into a list of dictionaries
@@ -18,6 +23,8 @@ flattened_data = [entry for sublist in data for entry in sublist]
 # Create nodes DataFrame
 nodes_df = pd.DataFrame(flattened_data)
 # print(nodes_df.head())
+df_size = sys.getsizeof(nodes_df)*1e-6
+print(f"Size of Nodes DataFrame is {df_size:.2f} MB")
 
 GLOBAL_DISTANCE = 37*1.1 # [km], rough criteria for separation
 
@@ -37,7 +44,13 @@ node_ids   = nodes_df['hex'].values
 
 
 # Matrix (shorthand "MX") to store distances
-edge_data = cp.zeros((len(latitudes), len(latitudes)), dtype=cp.float32)
+Len = len(latitudes)
+sizeMX = Len*Len*4*1e-6
+print(f"Requested a MX to device of {sizeMX:.2f} MB")
+edge_data = cp.zeros((Len, Len), dtype=cp.float32)
+
+
+
 
 R = cp.float32(6371.0) # [km]
 
