@@ -36,12 +36,13 @@ Data on aircraft location and other attributes is accessible by means of ADS-B s
 
 # Example showcase
 
-Just under one minute of acquisition in the West of Europe (see Airplaines.live API limitations), the data is encoded into 2120 nodes having used an adjacency criteria of 5.5 km threshold between nodes and a 1.1 overhead factor --see [ICAO's Chapter 3 of Annex 11](https://www.iacm.gov.mz/app/uploads/2018/12/an_11_Air-Traffic-Services_15ed._2018_rev.51_01.07.18.pdf), which establishes the minimal longitudinal, vertical and lateral separation between aircrafts. The most salient hubs are found by visual inspection in the vicinity of London and Paris, followed by Amsterdam. One possible visualization is found below:
+Just under one minute of acquisition in the West of Europe (see Airplaines.live API limitations), the data is encoded into ca. 2000 nodes. As for adjacency, there are many scenarios to consider for inter-aircraft separation (maneuver type, ground speed and Mach number, ground position instruments available, etc.), therefore we use for now a threshold of 37 km between nodes and a 1.1 overhead factor --see [ICAO's Chapter 3 of Annex 11](https://www.iacm.gov.mz/app/uploads/2018/12/an_11_Air-Traffic-Services_15ed._2018_rev.51_01.07.18.pdf) and [Chapter 5 of PANS-ATM(Doc 4444)](https://applications.icao.int/tools/ATMiKIT/story_content/external_files/story_content/external_files/DOC%204444_PANS%20ATM_en.pdf), which establish the minimal longitudinal, vertical and lateral separation between aircrafts. The most salient hubs are found by visual inspection in the vicinity of London and Paris, followed by Amsterdam. One possible visualization is found below:
 
 
 
 <p align="center">
-  <img src="assets/Sample02.png" width="45%" />
-  <img src="assets/Sample03.png" width="45%" />
+  <!--<img src="assets/Sample02.png" width="45%" />-->
+  <!--<img src="assets/Sample03.png" width="45%" />-->
+  <img src="assets/Sample05.png" width="60%" />
 </p>
 
