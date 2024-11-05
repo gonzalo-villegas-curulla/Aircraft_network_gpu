@@ -45,7 +45,7 @@ Just under one minute of acquisition in the West of Europe (see Airplaines.live 
 <p align="center">
   <!--<img src="assets/Sample02.png" width="47%" />-->
   <!--<img src="assets/Sample03.png" width="47%" />-->
-  <img src="assets/Sample05.png" width="47%" />
-  <img src="assets/Sample06.png" width="47%" />
+  <img src="assets/Sample09.png" width="47%" />
+  <img src="assets/Sample08.png" width="47%" />
 </p>
 
