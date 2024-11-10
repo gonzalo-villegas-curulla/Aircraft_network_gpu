@@ -24,7 +24,7 @@ Data on aircraft location and other attributes is accessible by means of ADS-B s
 
 # Challenges
 * A definition for nodes and interpretation of what roles do (1) moving aircrafts and (2) airports play in a network
-* What type of graph best represents the elements and attributes of the system described?
+* What type of graph best represents the elements and attributes of the system described? What degree distribution should we expect? How do we determine adjacency?
 * Accelerate code to process data, ideally, under quasi-real-time requests
 * Interpretation and utilisation of sub-graphs
 * Differentiate between stationary (zero baro-rate) and transient aircrafts maneuvering (i.e. landing or taking off)
@@ -32,8 +32,8 @@ Data on aircraft location and other attributes is accessible by means of ADS-B s
 
 # Tools
 * `Networkx` for basic prototyping tasks in host code
-* `CUDA`, `pyCUDA`, `cugraph` for acceleration, running device code and faster algebra in analysis (minimum compute capability of 7.0 is required to run on GPU device)
-* `Graphistry` only resource for graph visualization
+* `CUDA`, `pyCUDA`, `cugraph` for acceleration, running device code and faster algebra in analysis (GPU minimum compute capability of 7.0 is required)
+* `Graphistry` online resource for graph visualization
 * `JSON` for data bases. Some relevant fields to store from each aricraft are:
     * `hex` ID of the aircraft
     * `ground_speed` and `true_speed`
